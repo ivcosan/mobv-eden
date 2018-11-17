@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Mobv-eden</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="sign_in">Prihlásiť sa</string>
+    <string name="register">Vytvoriť účet</string>
+    <string name="username">Používateľské meno</string>
+    <string name="password">Heslo</string>
+    <string name="confirm">Potvrdiť</string>
+    <string name="email">Email</string>
+    <string name="createAccount">Vytvoriť si účet</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
