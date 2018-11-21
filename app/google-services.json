@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "606971518596",
+    "firebase_url": "https://eden-mobv.firebaseio.com",
+    "project_id": "eden-mobv",
+    "storage_bucket": "eden-mobv.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606971518596:android:801701244161925b",
+        "android_client_info": {
+          "package_name": "eden.mobv.api.fei.stu.sk.mobv_eden"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "606971518596-3m2ai2b4265uimko91mhog5crup3a4ii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_09rQYwd1hi6HbgEJAWJmXdUFUInjL2g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
