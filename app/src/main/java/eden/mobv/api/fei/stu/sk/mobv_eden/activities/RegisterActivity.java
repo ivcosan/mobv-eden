@@ -1,4 +1,4 @@
-package eden.mobv.api.fei.stu.sk.mobv_eden;
+package eden.mobv.api.fei.stu.sk.mobv_eden.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +11,7 @@ import android.widget.Toast;
 import android.app.ProgressDialog;
 
 import com.google.firebase.auth.FirebaseAuth;
+import eden.mobv.api.fei.stu.sk.mobv_eden.R;
 
 public class RegisterActivity extends AppCompatActivity {
     FirebaseAuth auth;

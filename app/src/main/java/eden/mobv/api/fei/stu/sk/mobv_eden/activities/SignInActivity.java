@@ -1,4 +1,4 @@
-package eden.mobv.api.fei.stu.sk.mobv_eden;
+package eden.mobv.api.fei.stu.sk.mobv_eden.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +9,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import eden.mobv.api.fei.stu.sk.mobv_eden.R;
 
-public class MainActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity {
     FirebaseAuth auth;
     EditText _email;
     EditText _password;
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_signin);
 
         this._email = findViewById(R.id.input_email);
         this._password = findViewById(R.id.input_password);

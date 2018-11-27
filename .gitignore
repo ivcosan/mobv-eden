@@ -4,7 +4,11 @@
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml
+/.idea/caches
+/.idea/gradle.xml
+/.idea/uiDesigner.xml
 .DS_Store
 /build
 /captures
 .externalNativeBuild
+/gradle.properties
