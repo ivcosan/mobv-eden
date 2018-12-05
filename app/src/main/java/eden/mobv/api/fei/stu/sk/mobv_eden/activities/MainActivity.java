@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-
         RecyclerView rvPosts = findViewById(R.id.rvPosts);
         posts = Post.createPostsList(50);
         PostAdapter adapter = new PostAdapter(posts);
