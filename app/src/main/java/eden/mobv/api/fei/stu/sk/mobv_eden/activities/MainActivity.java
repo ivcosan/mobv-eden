@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.*;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import eden.mobv.api.fei.stu.sk.mobv_eden.R;
 import eden.mobv.api.fei.stu.sk.mobv_eden.adapters.PostAdapter;
 import eden.mobv.api.fei.stu.sk.mobv_eden.resources.Post;
+import eden.mobv.api.fei.stu.sk.mobv_eden.resources.User;
 
 import java.util.ArrayList;
 
