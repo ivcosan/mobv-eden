@@ -89,6 +89,7 @@ public class SignInActivity extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = auth.getCurrentUser();
 
+        eden.mobv.api.fei.stu.sk.mobv_eden.resources.User currentUser = eden.mobv.api.fei.stu.sk.mobv_eden.resources.User.getInstance();
         Map<String, Object> user = new HashMap<>();
         if (firebaseUser.getDisplayName() != null) {
             user.put("username", firebaseUser.getDisplayName());
@@ -98,6 +99,11 @@ public class SignInActivity extends AppCompatActivity {
 
         user.put("date", new Timestamp(new java.util.Date()));
         user.put("numberOfPosts", 0);
+
+        currentUser.setUsername(user.get("username").toString());
+        currentUser.setDate((Timestamp) user.get("date"));
+        currentUser.setNumberOfPosts(0);
+
 
         db.collection("users")
                 .document(firebaseUser.getUid())
