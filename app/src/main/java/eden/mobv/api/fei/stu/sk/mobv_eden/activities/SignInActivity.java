@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eden.mobv.api.fei.stu.sk.mobv_eden.R;
+import eden.mobv.api.fei.stu.sk.mobv_eden.resources.FirestoreDatabase;
 
 public class SignInActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 17;
@@ -84,8 +85,6 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     protected void addNewUserWithPosts() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = auth.getCurrentUser();
 
@@ -104,24 +103,11 @@ public class SignInActivity extends AppCompatActivity {
         currentUser.setDate((Timestamp) user.get("date"));
         currentUser.setNumberOfPosts(0);
 
+        FirestoreDatabase fd = new FirestoreDatabase();
+        fd.addUser(user);
 
-        db.collection("users")
-                .document(firebaseUser.getUid())
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getBaseContext(), "preslo a prihlaseny", Toast.LENGTH_LONG).show();
-//                        Log.d(TAG, "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getBaseContext(), "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
-                        Crashlytics.logException(e);
-                    }
-                });
     }
+
+
 
 }
