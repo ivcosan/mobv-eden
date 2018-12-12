@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import eden.mobv.api.fei.stu.sk.mobv_eden.R;
 import eden.mobv.api.fei.stu.sk.mobv_eden.Utils.PostFactory;
+import eden.mobv.api.fei.stu.sk.mobv_eden.Utils.RealPathUtil;
 import eden.mobv.api.fei.stu.sk.mobv_eden.adapters.ParentAdapter;
 import eden.mobv.api.fei.stu.sk.mobv_eden.resources.FirestoreDatabase;
 import eden.mobv.api.fei.stu.sk.mobv_eden.resources.UploadMediaButton;
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity{
 
                 try {
                     Uri selectedMediaUri = data.getData();
-                    String realPathToFile = selectedMediaUri.getPath();
+                    String realPathToFile = RealPathUtil.getRealPath(getApplicationContext(), selectedMediaUri);//selectedMediaUri.getPath();
                     File selectedFile = new File(realPathToFile);//create path from uri
                     int fileSize = Integer.parseInt(String.valueOf(selectedFile.length()/1024)); // file size in KB
                     // if less than fileSizeAllowed (8 MB)
@@ -117,21 +121,10 @@ public class MainActivity extends AppCompatActivity{
                     }
                 } catch (Exception e) {
                     Crashlytics.logException(e);
+                    Toast.makeText(getBaseContext(), "Chyba pri ziskavani cesty k suboru.", Toast.LENGTH_LONG).show();
                 }
             }
         }
-    }
-
-    private String getRealPath(Uri uri) {
-
-//        String[] projection = { MediaStore.Images.Media.DATA };
-        String[] projection = {MediaStore.Images.Media.DATA};
-        @SuppressLint("Recycle") Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        assert cursor != null;
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-
-        return cursor.getString(column_index);
     }
 
 }
