@@ -39,6 +39,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
         RecyclerView.LayoutManager childLayoutManager = new LinearLayoutManager(holder.recyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
         ((LinearLayoutManager) childLayoutManager).setInitialPrefetchItemCount(4);
         holder.recyclerView.setLayoutManager(childLayoutManager);
+        childLayoutManager.scrollToPosition(PostsSingleton.getInstance().getCurrentIndex(parent.getUsername(), parent.getDate()));
         holder.recyclerView.setAdapter(new ChildAdapter(PostsSingleton.getInstance().getPostsByUsername(parent.getUsername()), mainContenxt));
         holder.recyclerView.setRecycledViewPool(viewPool);
     }
@@ -56,7 +57,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             recyclerView = itemView.findViewById(R.id.rv_child);
-            RecyclerView.ItemDecoration horizontalDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.HORIZONTAL);
+            RecyclerView.ItemDecoration horizontalDecoration = new DividerItemDecoration(mainContenxt, DividerItemDecoration.HORIZONTAL);
             SnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(recyclerView);
             recyclerView.addItemDecoration(horizontalDecoration);

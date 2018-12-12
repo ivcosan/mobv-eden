@@ -43,4 +43,15 @@ public class PostsSingleton {
     public List<Post> getPostsByUsername(String username){
         return postsByUser.get(username);
     }
+
+    public int getCurrentIndex(String username, long millis){
+        if(postsByUser.containsKey(username)){
+            for(int i = 0; i < postsByUser.get(username).size(); i++){
+                if(postsByUser.get(username).get(i).getDate() == millis){
+                    return i;
+                }
+            }
+        }
+        return 0;
+    }
 }
