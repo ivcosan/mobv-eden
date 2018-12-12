@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -22,11 +23,16 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.core.OrderBy;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -36,7 +42,7 @@ import eden.mobv.api.fei.stu.sk.mobv_eden.activities.MainActivity;
 public class FirestoreDatabase {
     public interface FirestoreDatabaseListener {
         public void onUserDataLoaded();
-        public void onUserPostsLoaded(QuerySnapshot document);
+        public void onUserPostsLoaded();
     }
 
     private FirebaseFirestore database;
@@ -161,14 +167,20 @@ public class FirestoreDatabase {
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 if (task.getResult().isEmpty()) {
-                                    Log.d("FirestoreDatabaseMacko", "No posts by user");
+                                    Log.d("FirestoreDatabase", "No posts by user");
                                 }
-                                System.out.println(task.getResult().toString());
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d("FirestoreDatabaseMacko", document.getId() + " => " + document.getData());
+                                List<Post> userPosts = new ArrayList<>();
+                                for (QueryDocumentSnapshot doc : task.getResult()) {
+                                    Post p = new Post();
+                                    p.setDate(((Date)doc.get("date")).getTime());
+                                    p.setImageUrl(doc.getString("imageUrl"));
+                                    p.setVideoUrl(doc.getString("videoUrl"));
+                                    p.setPostType(doc.getString("type"));
+                                    userPosts.add(p);
                                 }
+                                User.getInstance().setPosts(userPosts);
                                 if (listener != null) {
-                                    listener.onUserPostsLoaded(task.getResult());
+                                    listener.onUserPostsLoaded();
                                 }
                             } else {
                                 Crashlytics.logException(task.getException());
@@ -178,9 +190,10 @@ public class FirestoreDatabase {
         }
     }
 
+
     public void getPostsByAllUsers() {
-        final CollectionReference colRef = database.collection("posts");
-        colRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        database.collection("posts").orderBy("date", Query.Direction.DESCENDING)
+            .addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
@@ -188,15 +201,56 @@ public class FirestoreDatabase {
                     return;
                 }
 
-                List<String> cities = new ArrayList<>();
+                Map<String, List<Post>> posts = new HashMap<>();
+                List<Post> allPosts = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     if (doc.get("username") != null) {
-                        cities.add(doc.getString("username"));
+                        Post p = new Post();
+                        p.setDate(((Date)doc.get("date")).getTime());
+                        p.setImageUrl(doc.getString("imageUrl"));
+                        p.setVideoUrl(doc.getString("videoUrl"));
+                        p.setPostType(doc.getString("type"));
+                        allPosts.add(p);
+                        if (posts.containsKey(doc.getString("username"))) {
+                            posts.get(doc.getString("username")).add(p);
+                        } else {
+                            List<Post> tmpList = new ArrayList<>();
+                            tmpList.add(p);
+                            posts.put(doc.getString("username"), tmpList);
+                        }
                     }
                 }
-                Log.d("firestoredatabase", "Data from database: " + cities);
+                Log.d("firestoredatabase", "Data from database: " + posts);
+//                Collections.sort(allPosts, new Comparator<Post>() {
+//                    @Override
+//                    public int compare(Post o1, Post o2) {
+//                        return o1.getDate() > o2.getDate() ? -1 : o1.getDate() < o2.getDate() ? 1 : 0;
+//                    }
+//                });
+//                for (int i = 0; i < allPosts.size(); i++) {
+//                    System.out.println(new Date(allPosts.get(i).getDate()));
+//                }
+
+//                System.out.println("****");
+
+//                for (Map.Entry<String, List<Post>> entry : posts.entrySet()) {
+//                    Collections.sort(entry.getValue(), new Comparator<Post>() {
+//                        @Override
+//                        public int compare(Post o1, Post o2) {
+//                            return o1.getDate() > o2.getDate() ? -1 : o1.getDate() < o2.getDate() ? 1 : 0;
+//                        }
+//                    });
+//                }
+
+//                for (Map.Entry<String, List<Post>> entry : posts.entrySet()) {
+//                    for (int i = 0; i < entry.getValue().size(); i++) {
+//                        System.out.println(new Date(entry.getValue().get(i).getDate()));
+//                    }
+//                    System.out.println("******");
+//                }
             }
         });
     }
+
 
 }

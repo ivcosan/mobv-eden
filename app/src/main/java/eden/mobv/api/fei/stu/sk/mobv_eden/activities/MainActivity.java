@@ -67,16 +67,8 @@ public class MainActivity extends AppCompatActivity{
                 }
 
                 @Override
-                public void onUserPostsLoaded(QuerySnapshot document) {
-                    String s = "";
-                    ConstraintLayout cl = findViewById(R.id.main_content);
-                    for (QueryDocumentSnapshot d : document) {
-                        Log.d("FirestoreDatabaseMacko", d.getId() + " => " + d.getData());
-                        s = s + d.getData().toString() + "\n";
-                    }
-                    TextView tv = new TextView(MainActivity.this);
-                    cl.addView(tv);
-                    tv.setText(s);
+                public void onUserPostsLoaded() {
+                    System.out.println("posts natiahnute");
                 }
             });
         }

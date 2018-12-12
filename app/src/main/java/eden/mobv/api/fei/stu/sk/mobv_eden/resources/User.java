@@ -2,13 +2,27 @@ package eden.mobv.api.fei.stu.sk.mobv_eden.resources;
 
 import com.google.firebase.Timestamp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
     private static User instance;
     private String username;
     private Timestamp date;
     private int numberOfPosts;
 
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    private List<Post> posts;
+
     private User() {
+        this.posts = new ArrayList<>();
     }
 
     static {
