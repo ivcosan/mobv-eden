@@ -1,5 +1,6 @@
 package eden.mobv.api.fei.stu.sk.mobv_eden.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.*;
 import android.view.LayoutInflater;
@@ -15,9 +16,11 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
 
     private RecyclerView.RecycledViewPool viewPool =  new RecyclerView.RecycledViewPool();
     private List<ParentPost> parents;
+    private Context mainContext;
 
-    public ParentAdapter(List<ParentPost> parents) {
+    public ParentAdapter(List<ParentPost> parents, Context mainContext) {
         this.parents = parents;
+        this.mainContext = mainContext;
     }
 
     @NonNull
@@ -32,11 +35,11 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ParentAdapter.ViewHolder holder, int position) {
         ParentPost parent = parents.get(position);
-        holder.textView.setText(parent.title);
+        //holder.textView.setText(parent.title);
         RecyclerView.LayoutManager childLayoutManager = new LinearLayoutManager(holder.recyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
         ((LinearLayoutManager) childLayoutManager).setInitialPrefetchItemCount(4);
         holder.recyclerView.setLayoutManager(childLayoutManager);
-        holder.recyclerView.setAdapter(new ChildAdapter(parent.children));
+        holder.recyclerView.setAdapter(new ChildAdapter(parent.children, mainContext));
         holder.recyclerView.setRecycledViewPool(viewPool);
     }
 
@@ -48,7 +51,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
     class ViewHolder extends RecyclerView.ViewHolder {
 
         RecyclerView recyclerView;
-        TextView textView;
+        //TextView textView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -57,7 +60,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
             SnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(recyclerView);
             recyclerView.addItemDecoration(horizontalDecoration);
-            textView = itemView.findViewById(R.id.textView);
+            //textView = itemView.findViewById(R.id.textView);
         }
     }
 }

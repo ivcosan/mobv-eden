@@ -20,7 +20,7 @@ public class PostFactory {
     public static List<ChildPost> getRandomChildren() {
         List<ChildPost> result = new ArrayList<>();
         for(int i = 0; i < 10; i++){
-            result.add(new ChildPost("Child title: "+i, R.mipmap.letter_i));
+            result.add(new ChildPost("Child title: "+i, "https://cf5.s3.souqcdn.com/item/2017/09/06/23/99/04/98/item_L_23990498_34952250.jpg"));
         }
         return result;
     }

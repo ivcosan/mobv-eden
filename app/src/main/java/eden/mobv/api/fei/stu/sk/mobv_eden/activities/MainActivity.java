@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity{
         snapHelper.attachToRecyclerView(recyclerView);
         recyclerView.addItemDecoration(verticalDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new ParentAdapter(PostFactory.getRandomParents()));
+        recyclerView.setAdapter(new ParentAdapter(PostFactory.getRandomParents(), getApplicationContext()));
         snapHelper.attachToRecyclerView(recyclerView);
 
         // BUTTON
