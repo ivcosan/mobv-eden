@@ -115,11 +115,21 @@ public class UploadMediaTask extends AsyncTask<String, Void, String> {
         System.out.println(response);
         if (response != null) {
             String mediaUrl = "http://mobv.mcomputing.eu/upload/v/" + response;
-            String userId = FirebaseAuth.getInstance().getUid(); // admin id: "jZt8S24UNOHhQmaIZXx5"
+
+            String userId;
+            // exception handlig for current user's ID
+            try {
+                userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+            }
+            catch (Exception e) {
+                Crashlytics.logException(e);
+                userId = "jZt8S24UNOHhQmaIZXx5";
+            }
+
             String username;
             // exception handlig for current user's username
             try {
-                username = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getDisplayName();
+                username = User.getInstance().getUsername();
             }
             catch (Exception e) {
                 Crashlytics.logException(e);
