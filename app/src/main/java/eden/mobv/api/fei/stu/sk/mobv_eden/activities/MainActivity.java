@@ -12,9 +12,12 @@ import android.os.Bundle;
 import android.support.v7.widget.*;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import eden.mobv.api.fei.stu.sk.mobv_eden.R;
 import eden.mobv.api.fei.stu.sk.mobv_eden.adapters.PostAdapter;
@@ -46,11 +49,25 @@ public class MainActivity extends AppCompatActivity{
         } else {
             Log.i("MainAcitivyFALSE", "nie je nacitany user");
             final FirestoreDatabase fd = new FirestoreDatabase();
+            fd.getPostsByAllUsers();
             fd.getDataFromUserDocument();
             fd.setFirestoreDatabaseListener(new FirestoreDatabase.FirestoreDatabaseListener() {
                 @Override
-                public void onDataLoaded() {
+                public void onUserDataLoaded() {
                     Toast.makeText(getBaseContext(), User.getInstance().getUsername(), Toast.LENGTH_LONG).show();
+                    fd.getPostsByCurrentUser();
+                }
+                @Override
+                public void onUserPostsLoaded(QuerySnapshot document) {
+                    String s = "";
+                    ConstraintLayout cl = findViewById(R.id.main_content);
+                    for (QueryDocumentSnapshot d : document) {
+                        Log.d("FirestoreDatabaseMacko", d.getId() + " => " + d.getData());
+                        s = s + d.getData().toString() + "\n";
+                    }
+                    TextView tv = new TextView(MainActivity.this);
+                    cl.addView(tv);
+                    tv.setText(s);
                 }
             });
         }
