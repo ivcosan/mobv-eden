@@ -1,45 +1,27 @@
 package eden.mobv.api.fei.stu.sk.mobv_eden.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.*;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import eden.mobv.api.fei.stu.sk.mobv_eden.R;
-import eden.mobv.api.fei.stu.sk.mobv_eden.Utils.PostFactory;
 import eden.mobv.api.fei.stu.sk.mobv_eden.Utils.RealPathUtil;
 import eden.mobv.api.fei.stu.sk.mobv_eden.adapters.ParentAdapter;
-import eden.mobv.api.fei.stu.sk.mobv_eden.resources.FirestoreDatabase;
-import eden.mobv.api.fei.stu.sk.mobv_eden.resources.UploadMediaButton;
-import eden.mobv.api.fei.stu.sk.mobv_eden.resources.UploadMediaTask;
-import eden.mobv.api.fei.stu.sk.mobv_eden.resources.User;
+import eden.mobv.api.fei.stu.sk.mobv_eden.resources.*;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 
     RecyclerView recyclerView;
+    FirestoreDatabase fd = null;
     private static final int MEDIA_PICKER_SELECT = 1;
     private static final int fileSizeAllowed = 8192; // 8 MB
 
@@ -48,7 +30,10 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initRecycler();
+        fd = new FirestoreDatabase();
+        fd.getPostsByAllUsers();
+
+//        initRecycler();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() == null) {
             Log.i("MainAcitivyTRUE", "NOVY USER");
@@ -56,20 +41,20 @@ public class MainActivity extends AppCompatActivity{
             startActivity(intent);
         } else {
             Log.i("MainAcitivyFALSE", "nie je nacitany user");
-            final FirestoreDatabase fd = new FirestoreDatabase();
-            fd.getPostsByAllUsers();
             fd.getDataFromUserDocument();
-            fd.setFirestoreDatabaseListener(new FirestoreDatabase.FirestoreDatabaseListener() {
-                @Override
-                public void onUserDataLoaded() {
-                    Toast.makeText(getBaseContext(), User.getInstance().getUsername(), Toast.LENGTH_LONG).show();
-                    fd.getPostsByCurrentUser();
-                }
+            fd.setFirestoreDatabaseListener( new FirestoreDatabase.FirestoreDatabaseListener() {
+                    @Override
+                    public void onUserDataLoaded() {
+                        Toast.makeText(getBaseContext(), User.getInstance().getUsername(), Toast.LENGTH_LONG).show();
+                        fd.getPostsByAllUsers();
+                    }
 
-                @Override
-                public void onUserPostsLoaded() {
-                    System.out.println("posts natiahnute");
-                }
+                    @Override
+                    public void onUserPostsLoaded() {
+                        System.out.println("posts natiahnute");
+                        initRecycler();
+                    }
+
             });
         }
     }
@@ -78,10 +63,12 @@ public class MainActivity extends AppCompatActivity{
         RecyclerView.ItemDecoration verticalDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         SnapHelper snapHelper = new LinearSnapHelper();
         recyclerView = findViewById(R.id.rvParent);
+        recyclerView.setOnFlingListener(null);
         snapHelper.attachToRecyclerView(recyclerView);
         recyclerView.addItemDecoration(verticalDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new ParentAdapter(PostFactory.getRandomParents()));
+//        recyclerView.setAdapter(new ParentAdapter(PostFactory.getRandomParents()));
+        recyclerView.setAdapter(new ParentAdapter(PostsSingleton.getInstance().getAllPosts(), getApplication()));
         snapHelper.attachToRecyclerView(recyclerView);
 
         // BUTTON
@@ -91,8 +78,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == MEDIA_PICKER_SELECT) {
             if (resultCode == RESULT_OK) {
 
@@ -118,5 +104,6 @@ public class MainActivity extends AppCompatActivity{
             }
         }
     }
+
 
 }

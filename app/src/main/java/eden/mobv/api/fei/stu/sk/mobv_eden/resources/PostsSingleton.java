@@ -7,20 +7,21 @@ import java.util.Map;
 
 public class PostsSingleton {
     private static PostsSingleton instance;
+
     private List<Post> allPosts;
-    private Map<String, Post> postsByUser;
+    private Map<String, List<Post>> postsByUser;
 
     private PostsSingleton() {
         this.allPosts = new ArrayList<>();
         this.postsByUser = new HashMap<>();
     }
 
-    static {
-        instance = new PostsSingleton();
-    }
-
     public static PostsSingleton getInstance() {
         return instance;
+    }
+
+    static {
+        instance = new PostsSingleton();
     }
 
     public List<Post> getAllPosts() {
@@ -31,11 +32,15 @@ public class PostsSingleton {
         this.allPosts = allPosts;
     }
 
-    public Map<String, Post> getLatestPosts() {
+    public Map<String, List<Post>> getPostsByUser() {
         return postsByUser;
     }
 
-    public void setLatestPosts(Map<String, Post> latestPosts) {
+    public void setPostsByUser(Map<String, List<Post>> latestPosts) {
         this.postsByUser = latestPosts;
+    }
+
+    public List<Post> getPostsByUsername(String username){
+        return postsByUser.get(username);
     }
 }

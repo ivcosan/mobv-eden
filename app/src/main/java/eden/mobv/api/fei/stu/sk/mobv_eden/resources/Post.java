@@ -1,13 +1,11 @@
 package eden.mobv.api.fei.stu.sk.mobv_eden.resources;
 
-
-import java.sql.Timestamp;
-
 public class Post {
     private long date;
     private String imageUrl;
     private String postType;
     private String videoUrl;
+    private String username;
 
     public Post() {}
 
@@ -41,5 +39,13 @@ public class Post {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

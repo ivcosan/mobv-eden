@@ -1,23 +1,26 @@
 package eden.mobv.api.fei.stu.sk.mobv_eden.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.*;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import eden.mobv.api.fei.stu.sk.mobv_eden.R;
-import eden.mobv.api.fei.stu.sk.mobv_eden.models.ParentPost;
+import eden.mobv.api.fei.stu.sk.mobv_eden.resources.Post;
+import eden.mobv.api.fei.stu.sk.mobv_eden.resources.PostsSingleton;
 
 import java.util.List;
 
 public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder> {
 
     private RecyclerView.RecycledViewPool viewPool =  new RecyclerView.RecycledViewPool();
-    private List<ParentPost> parents;
+    private List<Post> parents;
+    private Context mainContenxt;
 
-    public ParentAdapter(List<ParentPost> parents) {
+    public ParentAdapter(List<Post> parents, Context mainContenxt) {
         this.parents = parents;
+        this.mainContenxt = mainContenxt;
     }
 
     @NonNull
@@ -31,12 +34,12 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ParentAdapter.ViewHolder holder, int position) {
-        ParentPost parent = parents.get(position);
-        holder.textView.setText(parent.title);
+        Post parent = parents.get(position);
+        //holder.textView.setText(parent.title);
         RecyclerView.LayoutManager childLayoutManager = new LinearLayoutManager(holder.recyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
         ((LinearLayoutManager) childLayoutManager).setInitialPrefetchItemCount(4);
         holder.recyclerView.setLayoutManager(childLayoutManager);
-        holder.recyclerView.setAdapter(new ChildAdapter(parent.children));
+        holder.recyclerView.setAdapter(new ChildAdapter(PostsSingleton.getInstance().getPostsByUsername(parent.getUsername()), mainContenxt));
         holder.recyclerView.setRecycledViewPool(viewPool);
     }
 
@@ -48,16 +51,16 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
     class ViewHolder extends RecyclerView.ViewHolder {
 
         RecyclerView recyclerView;
-        TextView textView;
+//        TextView textView;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             recyclerView = itemView.findViewById(R.id.rv_child);
             RecyclerView.ItemDecoration horizontalDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.HORIZONTAL);
             SnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(recyclerView);
             recyclerView.addItemDecoration(horizontalDecoration);
-            textView = itemView.findViewById(R.id.textView);
+//            textView = itemView.findViewById(R.id.textView);
         }
     }
 }

@@ -1,23 +1,26 @@
 package eden.mobv.api.fei.stu.sk.mobv_eden.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+import com.bumptech.glide.Glide;
 import eden.mobv.api.fei.stu.sk.mobv_eden.R;
-import eden.mobv.api.fei.stu.sk.mobv_eden.models.ChildPost;
+import eden.mobv.api.fei.stu.sk.mobv_eden.resources.Post;
 
 import java.util.List;
 
 public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> {
 
-    private List<ChildPost> children;
+    private List<Post> children;
+    private Context mainContenxt;
 
-    public ChildAdapter(List<ChildPost> children) {
+    ChildAdapter(List<Post> children, Context mainContenxt) {
         this.children = children;
+        this.mainContenxt = mainContenxt;
     }
 
     @NonNull
@@ -31,9 +34,12 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ChildPost child = children.get(position);
-        holder.imageView.setImageResource(child.image);
-        holder.textView.setText(child.title);
+        Post child = children.get(position);
+//        holder.imageView.setImageResource();
+        Glide.with(mainContenxt)
+                .load(child.getImageUrl())
+                .into(holder.imageView);
+//        holder.textView.setText(child.title);
     }
 
     @Override
@@ -43,12 +49,12 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textView;
+//        TextView textView;
         ImageView imageView;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.child_textView);
+//            textView = itemView.findViewById(R.id.child_textView);
             imageView = itemView.findViewById(R.id.child_imageView);
         }
     }

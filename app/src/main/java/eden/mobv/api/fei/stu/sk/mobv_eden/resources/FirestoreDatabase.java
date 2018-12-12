@@ -2,42 +2,18 @@ package eden.mobv.api.fei.stu.sk.mobv_eden.resources;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.*;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.core.OrderBy;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import javax.annotation.Nullable;
-
-import eden.mobv.api.fei.stu.sk.mobv_eden.activities.MainActivity;
+import java.util.*;
 
 public class FirestoreDatabase {
     public interface FirestoreDatabaseListener {
@@ -156,40 +132,39 @@ public class FirestoreDatabase {
         });
     }
 
-    public void getPostsByCurrentUser() {
-        if (User.getInstance().getUsername() != null) {
-            database.collection("posts")
-                    .whereEqualTo("username", User.getInstance().getUsername())
-                    .orderBy("date", Query.Direction.DESCENDING)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                if (task.getResult().isEmpty()) {
-                                    Log.d("FirestoreDatabase", "No posts by user");
-                                }
-                                List<Post> userPosts = new ArrayList<>();
-                                for (QueryDocumentSnapshot doc : task.getResult()) {
-                                    Post p = new Post();
-                                    p.setDate(((Date)doc.get("date")).getTime());
-                                    p.setImageUrl(doc.getString("imageUrl"));
-                                    p.setVideoUrl(doc.getString("videoUrl"));
-                                    p.setPostType(doc.getString("type"));
-                                    userPosts.add(p);
-                                }
-                                User.getInstance().setPosts(userPosts);
-                                if (listener != null) {
-                                    listener.onUserPostsLoaded();
-                                }
-                            } else {
-                                Crashlytics.logException(task.getException());
-                            }
-                        }
-                    });
-        }
-    }
-
+//    public void getPostsByCurrentUser() {
+//        if (User.getInstance().getUsername() != null) {
+//            database.collection("posts")
+//                    .whereEqualTo("username", User.getInstance().getUsername())
+//                    .orderBy("date", Query.Direction.DESCENDING)
+//                    .get()
+//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                if (task.getResult().isEmpty()) {
+//                                    Log.d("FirestoreDatabase", "No posts by user");
+//                                }
+//                                List<Post> userPosts = new ArrayList<>();
+//                                for (QueryDocumentSnapshot doc : task.getResult()) {
+//                                    Post p = new Post();
+//                                    p.setDate(((Date)doc.get("date")).getTime());
+//                                    p.setImageUrl(doc.getString("imageUrl"));
+//                                    p.setVideoUrl(doc.getString("videoUrl"));
+//                                    p.setPostType(doc.getString("type"));
+//                                    userPosts.add(p);
+//                                }
+//                                User.getInstance().setPosts(userPosts);
+//                                if (listener != null) {
+//                                    listener.onUserPostsLoaded();
+//                                }
+//                            } else {
+//                                Crashlytics.logException(task.getException());
+//                            }
+//                        }
+//                    });
+//        }
+//    }
 
     public void getPostsByAllUsers() {
         database.collection("posts").orderBy("date", Query.Direction.DESCENDING)
@@ -210,6 +185,11 @@ public class FirestoreDatabase {
                         p.setImageUrl(doc.getString("imageUrl"));
                         p.setVideoUrl(doc.getString("videoUrl"));
                         p.setPostType(doc.getString("type"));
+                        p.setUsername(doc.getString("username"));
+                        // TODO add video support
+                        if(p.getPostType().equals("video")){
+                            continue;
+                        }
                         allPosts.add(p);
                         if (posts.containsKey(doc.getString("username"))) {
                             posts.get(doc.getString("username")).add(p);
@@ -221,33 +201,12 @@ public class FirestoreDatabase {
                     }
                 }
                 Log.d("firestoredatabase", "Data from database: " + posts);
-//                Collections.sort(allPosts, new Comparator<Post>() {
-//                    @Override
-//                    public int compare(Post o1, Post o2) {
-//                        return o1.getDate() > o2.getDate() ? -1 : o1.getDate() < o2.getDate() ? 1 : 0;
-//                    }
-//                });
-//                for (int i = 0; i < allPosts.size(); i++) {
-//                    System.out.println(new Date(allPosts.get(i).getDate()));
-//                }
-
-//                System.out.println("****");
-
-//                for (Map.Entry<String, List<Post>> entry : posts.entrySet()) {
-//                    Collections.sort(entry.getValue(), new Comparator<Post>() {
-//                        @Override
-//                        public int compare(Post o1, Post o2) {
-//                            return o1.getDate() > o2.getDate() ? -1 : o1.getDate() < o2.getDate() ? 1 : 0;
-//                        }
-//                    });
-//                }
-
-//                for (Map.Entry<String, List<Post>> entry : posts.entrySet()) {
-//                    for (int i = 0; i < entry.getValue().size(); i++) {
-//                        System.out.println(new Date(entry.getValue().get(i).getDate()));
-//                    }
-//                    System.out.println("******");
-//                }
+//                User.getInstance().setPosts(posts.get(User.getInstance().getUsername()));
+                PostsSingleton.getInstance().setAllPosts(allPosts);
+                PostsSingleton.getInstance().setPostsByUser(posts);
+                if (listener != null) {
+                    listener.onUserPostsLoaded();
+                }
             }
         });
     }
