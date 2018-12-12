@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mobv-eden</string>
+    <string name="app_name">eden</string>
     <string name="sign_in">Prihlásiť sa</string>
     <string name="register">Vytvoriť účet</string>
     <string name="username">Používateľské meno</string>
