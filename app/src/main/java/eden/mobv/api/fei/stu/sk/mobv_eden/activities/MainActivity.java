@@ -15,24 +15,27 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import eden.mobv.api.fei.stu.sk.mobv_eden.R;
-import eden.mobv.api.fei.stu.sk.mobv_eden.adapters.PostAdapter;
+import eden.mobv.api.fei.stu.sk.mobv_eden.Utils.PostFactory;
+import eden.mobv.api.fei.stu.sk.mobv_eden.adapters.ParentAdapter;
 import eden.mobv.api.fei.stu.sk.mobv_eden.resources.FirestoreDatabase;
-import eden.mobv.api.fei.stu.sk.mobv_eden.resources.Post;
 import eden.mobv.api.fei.stu.sk.mobv_eden.resources.UploadMediaButton;
 import eden.mobv.api.fei.stu.sk.mobv_eden.resources.UploadMediaTask;
 import eden.mobv.api.fei.stu.sk.mobv_eden.resources.User;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 
-    private ArrayList<Post> posts;
+    RecyclerView recyclerView;
     private static final int MEDIA_PICKER_SELECT = 1;
     private static final int fileSizeAllowed = 8192; // 8 MB
 
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initRecycler();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() == null) {
             Log.i("MainAcitivyTRUE", "NOVY USER");
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity{
                     Toast.makeText(getBaseContext(), User.getInstance().getUsername(), Toast.LENGTH_LONG).show();
                     fd.getPostsByCurrentUser();
                 }
+
                 @Override
                 public void onUserPostsLoaded(QuerySnapshot document) {
                     String s = "";
@@ -71,18 +76,17 @@ public class MainActivity extends AppCompatActivity{
                 }
             });
         }
+    }
 
-        RecyclerView rvPosts = findViewById(R.id.rvPosts);
-        posts = Post.createPostsList(50);
-        PostAdapter adapter = new PostAdapter(posts);
-        rvPosts.setAdapter(adapter);
-        rvPosts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
-        RecyclerView.ItemDecoration decoration = new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL);
-        rvPosts.addItemDecoration(decoration);
-
+    private void initRecycler() {
+        RecyclerView.ItemDecoration verticalDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(rvPosts);
+        recyclerView = findViewById(R.id.rvParent);
+        snapHelper.attachToRecyclerView(recyclerView);
+        recyclerView.addItemDecoration(verticalDecoration);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(new ParentAdapter(PostFactory.getRandomParents()));
+        snapHelper.attachToRecyclerView(recyclerView);
 
         // BUTTON
         ConstraintLayout cl = findViewById(R.id.main_content);
@@ -96,19 +100,23 @@ public class MainActivity extends AppCompatActivity{
         if (requestCode == MEDIA_PICKER_SELECT) {
             if (resultCode == RESULT_OK) {
 
-                Uri selectedMediaUri = data.getData();
-                String realPathToFile = getRealPath(selectedMediaUri);
-                File selectedFile = new File(realPathToFile);
-                int fileSize = Integer.parseInt(String.valueOf(selectedFile.length()/1024)); // file size in KB
-                // if less than fileSizeAllowed (8 MB)
-                if (fileSize <= fileSizeAllowed) {
-                    new UploadMediaTask().execute(realPathToFile);
-                }
-                else {
-                    Context context = getApplicationContext();
-                    CharSequence text = "Súbor je príliš veľký. Maximálna povolená veľkost je 8MB."; // TODO: add to strings
-                    Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
-                    toast.show();
+                try {
+                    Uri selectedMediaUri = data.getData();
+                    String realPathToFile = selectedMediaUri.getPath();
+                    File selectedFile = new File(realPathToFile);//create path from uri
+                    int fileSize = Integer.parseInt(String.valueOf(selectedFile.length()/1024)); // file size in KB
+                    // if less than fileSizeAllowed (8 MB)
+                    if (fileSize <= fileSizeAllowed) {
+                        new UploadMediaTask().execute(realPathToFile);
+                    }
+                    else {
+                        Context context = getApplicationContext();
+                        CharSequence text = "Súbor je príliš veľký. Maximálna povolená veľkost je 8MB."; // TODO: add to strings
+                        Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                } catch (Exception e) {
+                    Crashlytics.logException(e);
                 }
             }
         }
@@ -116,7 +124,8 @@ public class MainActivity extends AppCompatActivity{
 
     private String getRealPath(Uri uri) {
 
-        String[] projection = { MediaStore.Images.Media.DATA };
+//        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         @SuppressLint("Recycle") Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
         assert cursor != null;
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
