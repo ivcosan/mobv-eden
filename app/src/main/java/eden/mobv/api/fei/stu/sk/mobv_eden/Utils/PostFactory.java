@@ -4,22 +4,25 @@ import eden.mobv.api.fei.stu.sk.mobv_eden.R;
 import eden.mobv.api.fei.stu.sk.mobv_eden.models.ChildPost;
 import eden.mobv.api.fei.stu.sk.mobv_eden.models.ParentPost;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class PostFactory {
 
     public static List<ParentPost> getRandomParents() {
-        return IntStream.rangeClosed(0, 9)
-                .mapToObj(i -> new ParentPost("Parent title: "+i, getRandomChildren()))
-                .collect(Collectors.toList());
+        List<ParentPost> result = new ArrayList<>();
+        for(int i = 0; i < 10; i++){
+            result.add(new ParentPost("Parent title: "+i, getRandomChildren()));
+        }
+        return result;
     }
 
     public static List<ChildPost> getRandomChildren() {
-        return IntStream.rangeClosed(0, 9)
-                .mapToObj(i -> new ChildPost("Child title: "+i, R.mipmap.letter_i))
-                .collect(Collectors.toList());
+        List<ChildPost> result = new ArrayList<>();
+        for(int i = 0; i < 10; i++){
+            result.add(new ChildPost("Child title: "+i, R.mipmap.letter_i));
+        }
+        return result;
     }
 
 }
