@@ -6,9 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -80,6 +82,14 @@ public class MainActivity extends AppCompatActivity{
         UploadMediaButton uploadButton = new UploadMediaButton(this, cl, MEDIA_PICKER_SELECT);
         uploadButton.setEverything();
 
+        FloatingActionButton fab = findViewById(R.id.fab_logout);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
+
     }
 
     @Override
@@ -98,7 +108,7 @@ public class MainActivity extends AppCompatActivity{
                     }
                     else {
                         Context context = getApplicationContext();
-                        CharSequence text = "Súbor je príliš veľký. Maximálna povolená veľkost je 8MB."; // TODO: add to strings
+                        CharSequence text = "File is too big (max 8MB), skipping upload."; // TODO: add to strings
                         Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
                         toast.show();
                     }
