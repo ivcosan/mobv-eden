@@ -32,31 +32,28 @@ public class MainActivity extends AppCompatActivity{
 
         fd = new FirestoreDatabase();
         fd.getPostsByAllUsers();
+        fd.getAllProfiles();
 
-//        initRecycler();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() == null) {
             Log.i("MainAcitivyTRUE", "NOVY USER");
             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
             startActivity(intent);
-        } else {
-            Log.i("MainAcitivyFALSE", "nie je nacitany user");
-            fd.getDataFromUserDocument();
-            fd.setFirestoreDatabaseListener( new FirestoreDatabase.FirestoreDatabaseListener() {
-                    @Override
-                    public void onUserDataLoaded() {
-                        Toast.makeText(getBaseContext(), User.getInstance().getUsername(), Toast.LENGTH_LONG).show();
-                        fd.getPostsByAllUsers();
-                    }
-
-                    @Override
-                    public void onUserPostsLoaded() {
-                        System.out.println("posts natiahnute");
-                        initRecycler();
-                    }
-
-            });
         }
+
+        fd.setFirestoreDatabaseListener( new FirestoreDatabase.FirestoreDatabaseListener() {
+            @Override
+            public void onUserPostsLoaded() {
+                Log.i("firestoredatabase", "Posts were successfully loaded");
+                initRecycler();
+            }
+
+            @Override
+            public void onProfilesLoaded() {
+                Log.i("firestoredatabase", "Profiles were successfully loaded");
+            }
+
+        });
     }
 
     private void initRecycler() {
