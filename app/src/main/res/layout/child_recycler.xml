@@ -17,6 +17,40 @@
             layout="@layout/profile"
             android:visibility="gone"/>
 
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:background="#a1dab02f">
+
+        <TextView
+                android:id="@+id/textViewUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/textViewPublicationDate"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="kktfsafsa"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:padding="5dp" />
+
+        <TextView
+                android:id="@+id/textViewPublicationDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="kktfsafsa"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:padding="5dp" />
+    </RelativeLayout>
+
         <!--<include-->
             <!--android:id="@+id/video"-->
             <!--layout="@layout/video_post"-->
