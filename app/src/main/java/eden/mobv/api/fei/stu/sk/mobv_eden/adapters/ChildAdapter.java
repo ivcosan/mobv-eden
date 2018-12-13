@@ -34,6 +34,10 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        // nastavi layout
+        holder.imageContent.setVisibility(View.GONE);
+        holder.profileContent.setVisibility(View.VISIBLE);
+
         Post child = children.get(position);
 //        holder.imageView.setImageResource();
         Glide.with(mainContenxt)
@@ -51,11 +55,15 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
 //        TextView textView;
         ImageView imageView;
+        View imageContent;
+        View profileContent;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 //            textView = itemView.findViewById(R.id.child_textView);
             imageView = itemView.findViewById(R.id.child_imageView);
+            imageContent = itemView.findViewById(R.id.id1);
+            profileContent = itemView.findViewById(R.id.id2);
         }
     }
 }

@@ -7,6 +7,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <include
+            android:id="@+id/id1"
+            layout="@layout/image_layout"
+            android:visibility="visible"/>
+
+        <include
+            android:id="@+id/id2"
+            layout="@layout/user_profile"
+            android:visibility="gone"/>
+
     <!--<TextView-->
             <!--android:id="@+id/child_textView"-->
             <!--android:layout_width="129dp"-->
