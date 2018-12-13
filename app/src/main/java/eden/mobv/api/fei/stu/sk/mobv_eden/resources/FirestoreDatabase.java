@@ -17,8 +17,8 @@ import java.util.*;
 
 public class FirestoreDatabase {
     public interface FirestoreDatabaseListener {
-        public void onUserDataLoaded();
-        public void onUserPostsLoaded();
+//        public void onUserPostsLoaded();
+        public void onProfilesLoaded();
     }
 
     private FirebaseFirestore database;
@@ -107,65 +107,6 @@ public class FirestoreDatabase {
                 .update(updatePosts);
     }
 
-    public void getDataFromUserDocument() {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        final DocumentReference docRef = this.database.collection("users").document(auth.getCurrentUser().getUid());
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Map<String, Object> data = document.getData();
-                        User.getInstance().setUsername(data.get("username").toString());
-                        User.getInstance().setNumberOfPosts(((Long)data.get("numberOfPosts")).intValue());
-                        if (listener != null) {
-                            listener.onUserDataLoaded();
-                        }
-                    } else {
-                        Crashlytics.log("User document -> no such document");
-                    }
-                } else {
-                    Crashlytics.logException(task.getException());
-                }
-            }
-        });
-    }
-
-//    public void getPostsByCurrentUser() {
-//        if (User.getInstance().getUsername() != null) {
-//            database.collection("posts")
-//                    .whereEqualTo("username", User.getInstance().getUsername())
-//                    .orderBy("date", Query.Direction.DESCENDING)
-//                    .get()
-//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                            if (task.isSuccessful()) {
-//                                if (task.getResult().isEmpty()) {
-//                                    Log.d("FirestoreDatabase", "No posts by user");
-//                                }
-//                                List<Post> userPosts = new ArrayList<>();
-//                                for (QueryDocumentSnapshot doc : task.getResult()) {
-//                                    Post p = new Post();
-//                                    p.setDate(((Date)doc.get("date")).getTime());
-//                                    p.setImageUrl(doc.getString("imageUrl"));
-//                                    p.setVideoUrl(doc.getString("videoUrl"));
-//                                    p.setPostType(doc.getString("type"));
-//                                    userPosts.add(p);
-//                                }
-//                                User.getInstance().setPosts(userPosts);
-//                                if (listener != null) {
-//                                    listener.onUserPostsLoaded();
-//                                }
-//                            } else {
-//                                Crashlytics.logException(task.getException());
-//                            }
-//                        }
-//                    });
-//        }
-//    }
-
     public void getPostsByAllUsers() {
         database.collection("posts").orderBy("date", Query.Direction.DESCENDING)
             .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -205,11 +146,36 @@ public class FirestoreDatabase {
                 PostsSingleton.getInstance().setAllPosts(allPosts);
                 PostsSingleton.getInstance().setPostsByUser(posts);
                 if (listener != null) {
-                    listener.onUserPostsLoaded();
+                    listener.onProfilesLoaded();
                 }
             }
         });
     }
 
-
+    public void getAllProfiles() {
+        this.database.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Map<String, UserProfile> userProfiles = new HashMap<>();
+                            for (QueryDocumentSnapshot doc : task.getResult()) {
+                                UserProfile up = new UserProfile();
+                                up.setNumberOfPosts(((Long)doc.get("numberOfPosts")).intValue());
+                                up.setUsername(doc.get("username").toString());
+                                up.setRegistrationDate(new Date(((Date)doc.get("date")).getTime()));
+                                Log.d("userProfiles", doc.getId() + " => " + doc.getData());
+                                userProfiles.put(doc.get("username").toString(), up);
+                            }
+                            PostsSingleton.getInstance().setProfileByUser(userProfiles);
+                            if(listener != null) {
+                                listener.onProfilesLoaded();
+                            }
+                        } else {
+                            Crashlytics.logException(task.getException());
+                        }
+                    }
+                });
+    }
 }

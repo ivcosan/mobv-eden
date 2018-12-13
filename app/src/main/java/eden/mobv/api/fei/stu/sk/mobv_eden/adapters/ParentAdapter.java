@@ -39,8 +39,8 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
         RecyclerView.LayoutManager childLayoutManager = new LinearLayoutManager(holder.recyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
         ((LinearLayoutManager) childLayoutManager).setInitialPrefetchItemCount(4);
         holder.recyclerView.setLayoutManager(childLayoutManager);
-        childLayoutManager.scrollToPosition(PostsSingleton.getInstance().getCurrentIndex(parent.getUsername(), parent.getDate()));
-        holder.recyclerView.setAdapter(new ChildAdapter(PostsSingleton.getInstance().getPostsByUsername(parent.getUsername()), mainContenxt));
+//        childLayoutManager.scrollToPosition(PostsSingleton.getInstance().getCurrentIndex(parent.getUsername(), parent.getDate()));
+        holder.recyclerView.setAdapter(new ChildAdapter(PostsSingleton.getInstance().getPostsByUsername(parent.getUsername()), mainContenxt, PostsSingleton.getInstance().getProfileByUsername(parent.getUsername())));
         holder.recyclerView.setRecycledViewPool(viewPool);
     }
 

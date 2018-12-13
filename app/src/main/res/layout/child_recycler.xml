@@ -8,14 +8,19 @@
         android:layout_height="match_parent">
 
         <include
-            android:id="@+id/id1"
-            layout="@layout/image_layout"
-            android:visibility="visible"/>
+            android:id="@+id/image_post"
+            layout="@layout/image_post"
+            android:visibility="gone"/>
 
         <include
-            android:id="@+id/id2"
-            layout="@layout/user_profile"
+            android:id="@+id/profile"
+            layout="@layout/profile"
             android:visibility="gone"/>
+
+        <!--<include-->
+            <!--android:id="@+id/video"-->
+            <!--layout="@layout/video_post"-->
+            <!--android:visibility="gone"/>-->
 
     <!--<TextView-->
             <!--android:id="@+id/child_textView"-->
@@ -39,10 +44,10 @@
             <!--app:layout_constraintTop_toTopOf="parent"-->
             <!--app:layout_constraintVertical_bias="0.0" />-->
 
-    <ImageView
-            android:id="@+id/child_imageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    <!--<ImageView-->
+            <!--android:id="@+id/child_imageView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"/>-->
             <!--android:layout_marginBottom="38dp"-->
             <!--android:layout_marginEnd="8dp"-->
             <!--android:layout_marginStart="8dp"-->

@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity{
     FirestoreDatabase fd = null;
     private static final int MEDIA_PICKER_SELECT = 1;
     private static final int fileSizeAllowed = 8192; // 8 MB
+    private static int dbOperationsFinished = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity{
 
         fd = new FirestoreDatabase();
         fd.getPostsByAllUsers();
+        fd.getAllProfiles();
 
 //        initRecycler();
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -39,27 +41,26 @@ public class MainActivity extends AppCompatActivity{
             Log.i("MainAcitivyTRUE", "NOVY USER");
             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
             startActivity(intent);
-        } else {
-            Log.i("MainAcitivyFALSE", "nie je nacitany user");
-            fd.getDataFromUserDocument();
-            fd.setFirestoreDatabaseListener( new FirestoreDatabase.FirestoreDatabaseListener() {
-                    @Override
-                    public void onUserDataLoaded() {
-                        Toast.makeText(getBaseContext(), User.getInstance().getUsername(), Toast.LENGTH_LONG).show();
-                        fd.getPostsByAllUsers();
-                    }
-
-                    @Override
-                    public void onUserPostsLoaded() {
-                        System.out.println("posts natiahnute");
-                        initRecycler();
-                    }
-
-            });
         }
+        fd.setFirestoreDatabaseListener( new FirestoreDatabase.FirestoreDatabaseListener() {
+//            @Override
+//            public void onUserPostsLoaded() {
+//                System.out.println("posts natiahnute");
+//            }
+
+            @Override
+            public void onProfilesLoaded() {
+                dbOperationsFinished++;
+                System.out.println("user profiles natiahnute");
+                if(dbOperationsFinished == 2){
+                        initRecycler();
+                }
+            }
+        });
     }
 
     private void initRecycler() {
+        dbOperationsFinished = 0;
         RecyclerView.ItemDecoration verticalDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         SnapHelper snapHelper = new LinearSnapHelper();
         recyclerView = findViewById(R.id.rvParent);

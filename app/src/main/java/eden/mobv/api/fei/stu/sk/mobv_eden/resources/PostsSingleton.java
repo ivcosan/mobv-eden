@@ -11,9 +11,24 @@ public class PostsSingleton {
     private List<Post> allPosts;
     private Map<String, List<Post>> postsByUser;
 
+    public Map<String, UserProfile> getProfileByUser() {
+        return profileByUser;
+    }
+
+    public UserProfile getProfileByUsername(String username){
+        return profileByUser.get(username);
+    }
+
+    public void setProfileByUser(Map<String, UserProfile> profileByUser) {
+        this.profileByUser = profileByUser;
+    }
+
+    private Map<String, UserProfile> profileByUser;
+
     private PostsSingleton() {
         this.allPosts = new ArrayList<>();
         this.postsByUser = new HashMap<>();
+        this.profileByUser = new HashMap<>();
     }
 
     public static PostsSingleton getInstance() {
