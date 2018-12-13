@@ -108,6 +108,8 @@ public class FirestoreDatabase {
         int prevNumberOfPosts = PostsSingleton.getInstance().getProfileByUsername(firebaseUser.getDisplayName()).getNumberOfPosts();
         int newNumberOfPosts = prevNumberOfPosts + 1;
 
+        user.setNumberOfPosts(newNumberOfPosts);
+
         Map<String, Object> updatePosts = new HashMap<>();
         updatePosts.put("numberOfPosts", newNumberOfPosts);
         this.database.collection("users")
