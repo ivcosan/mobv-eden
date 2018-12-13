@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity{
                     }
                     else {
                         Context context = getApplicationContext();
-                        CharSequence text = "Súbor je príliš veľký. Maximálna povolená veľkost je 8MB."; // TODO: add to strings
+                        CharSequence text = "File is too big (max 8MB), skipping upload."; // TODO: add to strings
                         Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
                         toast.show();
                     }

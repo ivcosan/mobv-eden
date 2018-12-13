@@ -104,7 +104,9 @@ public class FirestoreDatabase {
         FirebaseUser firebaseUser = auth.getCurrentUser();
 
         User user = User.getInstance();
-        int newNumberOfPosts = user.getNumberOfPosts() + 1;
+
+        int prevNumberOfPosts = PostsSingleton.getInstance().getProfileByUsername(firebaseUser.getDisplayName()).getNumberOfPosts();
+        int newNumberOfPosts = prevNumberOfPosts + 1;
 
         Map<String, Object> updatePosts = new HashMap<>();
         updatePosts.put("numberOfPosts", newNumberOfPosts);
@@ -174,10 +176,11 @@ public class FirestoreDatabase {
                                 Log.d("userProfiles", doc.getId() + " => " + doc.getData());
                                 userProfiles.put(doc.get("username").toString(), up);
                             }
-                            FirebaseAuth auth = FirebaseAuth.getInstance();
-                            if (auth != null && userProfiles != null) {
-                                User.getInstance().setNumberOfPosts(userProfiles.get(auth.getCurrentUser().getDisplayName()).getNumberOfPosts());
-                            }
+//                            User.getInstance().setNumberOfPosts(userProfiles.get(User.getInstance().getUsername()).getNumberOfPosts());
+//                            FirebaseAuth auth = FirebaseAuth.getInstance();
+//                            if (auth != null && userProfiles != null) {
+//                                User.getInstance().setNumberOfPosts(userProfiles.get(auth.getCurrentUser().getDisplayName()).getNumberOfPosts());
+//                            }
                             PostsSingleton.getInstance().setProfileByUser(userProfiles);
                             if(listener != null) {
                                 listener.onProfilesLoaded();
