@@ -1,34 +1,20 @@
 package eden.mobv.api.fei.stu.sk.mobv_eden.resources;
 
 import android.os.AsyncTask;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
 
-import eden.mobv.api.fei.stu.sk.mobv_eden.resources.FirestoreDatabase;
-
 public class UploadMediaTask extends AsyncTask<String, Void, String> {
 
     private String pathToFile;
-
-    // TODO: treba pridat do Android Manifest
-    //  <!-- Permission for UserInputStream (file upload) -->
-    //    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     @Override
     protected String doInBackground(String[] pathToOurFile) {
@@ -137,7 +123,6 @@ public class UploadMediaTask extends AsyncTask<String, Void, String> {
             } else {
                 Crashlytics.log("tu by sa mal dostat iba prihlaseny user");
             }
-
 
             FirestoreDatabase database = new FirestoreDatabase();
             database.addPost(isImageOrVideo(pathToFile), mediaUrl, userId, username);

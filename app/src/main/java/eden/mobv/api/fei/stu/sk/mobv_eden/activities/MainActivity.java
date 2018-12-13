@@ -6,9 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,19 +46,16 @@ public class MainActivity extends AppCompatActivity{
             Log.i("MainAcitivyTRUE", "NOVY USER");
             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
             startActivity(intent);
+        } else {
+            fd.setUser();
         }
         fd.setFirestoreDatabaseListener( new FirestoreDatabase.FirestoreDatabaseListener() {
-//            @Override
-//            public void onUserPostsLoaded() {
-//                System.out.println("posts natiahnute");
-//            }
-
             @Override
             public void onProfilesLoaded() {
                 dbOperationsFinished++;
                 System.out.println("user profiles natiahnute");
                 if(dbOperationsFinished == 2){
-                        initRecycler();
+                    initRecycler();
                 }
             }
         });
@@ -79,6 +78,15 @@ public class MainActivity extends AppCompatActivity{
         ConstraintLayout cl = findViewById(R.id.main_content);
         UploadMediaButton uploadButton = new UploadMediaButton(this, cl, MEDIA_PICKER_SELECT);
         uploadButton.setEverything();
+
+        // SIGN OUT
+        FloatingActionButton fab = findViewById(R.id.fab_logout);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
 
     }
 

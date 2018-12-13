@@ -13,6 +13,7 @@ import eden.mobv.api.fei.stu.sk.mobv_eden.R;
 import eden.mobv.api.fei.stu.sk.mobv_eden.resources.Post;
 import eden.mobv.api.fei.stu.sk.mobv_eden.resources.UserProfile;
 
+import java.util.Date;
 import java.util.List;
 
 public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> {
@@ -41,6 +42,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         System.out.println("Position: "+position);
         if(position == 0){
             // vykreslit profil
+            holder.relativeLayout.setVisibility(View.GONE);
             holder.imageInclude.setVisibility(View.GONE);
             holder.profileInclude.setVisibility(View.VISIBLE);
 
@@ -50,12 +52,16 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
         } else {
             // vykreslit image/video
+            holder.relativeLayout.setVisibility(View.VISIBLE);
             Post child = children.get(position);
             holder.imageInclude.setVisibility(View.VISIBLE);
             holder.profileInclude.setVisibility(View.GONE);
             Glide.with(mainContenxt)
                     .load(child.getImageUrl())
                     .into(holder.imageView);
+            holder.imageMeno.setText(child.getUsername());
+            holder.imageDatum.setText(String.valueOf(new Date(child.getDate())));
+
         }
 
     }
@@ -75,7 +81,12 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         TextView profileNumPosts;
         TextView profileName;
 
+        View relativeLayout;
+
         View videoInclude;
+
+        TextView imageMeno;
+        TextView imageDatum;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,6 +97,12 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
             profileDate = itemView.findViewById(R.id.profile_date);
             profileNumPosts = itemView.findViewById(R.id.profile_num_posts);
             profileName = itemView.findViewById(R.id.profile_name);
+
+            relativeLayout = itemView.findViewById(R.id.relative_layout_id);
+
+            imageMeno = itemView.findViewById(R.id.image_post_meno);
+            imageDatum = itemView.findViewById(R.id.image_post_datum);
+
         }
     }
 }
