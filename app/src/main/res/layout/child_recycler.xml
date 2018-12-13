@@ -23,6 +23,11 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:background="#a1dab02f">
+        android:layout_width="match_parent"
+        android:layout_height="115dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:background="#1e595353">
 
         <TextView
                 android:id="@+id/textViewUserName"
