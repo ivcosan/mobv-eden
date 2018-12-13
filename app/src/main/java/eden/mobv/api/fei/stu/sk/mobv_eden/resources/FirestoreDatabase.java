@@ -3,6 +3,7 @@ package eden.mobv.api.fei.stu.sk.mobv_eden.resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -67,6 +68,12 @@ public class FirestoreDatabase {
                     }
                 });
 
+    }
+
+    public void setUser() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        User.getInstance().setUsername(firebaseUser.getDisplayName());
     }
 
     public void addUser(Map<String, Object> user) {
@@ -168,6 +175,10 @@ public class FirestoreDatabase {
                                 Log.d("userProfiles", doc.getId() + " => " + doc.getData());
                                 userProfiles.put(doc.get("username").toString(), up);
                             }
+
+                            //set data for current user
+                            User.getInstance().setNumberOfPosts(userProfiles.get(User.getInstance().getUsername()).getNumberOfPosts());
+
                             if(listener != null) {
                                 listener.onProfilesLoaded();
                             }
