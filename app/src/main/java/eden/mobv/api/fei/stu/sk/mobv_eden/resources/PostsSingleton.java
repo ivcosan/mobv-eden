@@ -1,5 +1,7 @@
 package eden.mobv.api.fei.stu.sk.mobv_eden.resources;
 
+import android.provider.ContactsContract;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
