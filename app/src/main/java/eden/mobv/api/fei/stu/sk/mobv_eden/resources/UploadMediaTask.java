@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONObject;
 
@@ -126,15 +127,18 @@ public class UploadMediaTask extends AsyncTask<String, Void, String> {
                 userId = "jZt8S24UNOHhQmaIZXx5";
             }
 
-            String username;
+            String username = "";
             // exception handlig for current user's username
-            try {
-                username = User.getInstance().getUsername();
+
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            if (auth != null) {
+                FirebaseUser firebaseUser = auth.getCurrentUser();
+                username = firebaseUser.getDisplayName();
+            } else {
+                Crashlytics.log("tu by sa mal dostat iba prihlaseny user");
             }
-            catch (Exception e) {
-                Crashlytics.logException(e);
-                username = "admin";
-            }
+
+
             FirestoreDatabase database = new FirestoreDatabase();
             database.addPost(isImageOrVideo(pathToFile), mediaUrl, userId, username);
         }

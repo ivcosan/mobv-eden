@@ -1,5 +1,7 @@
 package eden.mobv.api.fei.stu.sk.mobv_eden.resources;
 
+import android.provider.ContactsContract;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +12,16 @@ public class PostsSingleton {
 
     private List<Post> allPosts;
     private Map<String, List<Post>> postsByUser;
+
+    public Map<String, UserProfile> getProfileByUser() {
+        return profileByUser;
+    }
+
+    public void setProfileByUser(Map<String, UserProfile> profileByUser) {
+        this.profileByUser = profileByUser;
+    }
+
+    private Map<String, UserProfile> profileByUser;
 
     private PostsSingleton() {
         this.allPosts = new ArrayList<>();

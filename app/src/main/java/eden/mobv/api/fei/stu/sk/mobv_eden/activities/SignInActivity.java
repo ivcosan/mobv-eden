@@ -61,10 +61,6 @@ public class SignInActivity extends AppCompatActivity {
 //                startActivity(SignInActivity.createIntent(this, response));
                 if (response.isNewUser()) {
                     addNewUserWithPosts();
-                } else {
-                    FirestoreDatabase fd = new FirestoreDatabase();
-                    fd.getDataFromUserDocument();
-//                    Toast.makeText(getBaseContext(), "prihlaseny", Toast.LENGTH_LONG).show();
                 }
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
