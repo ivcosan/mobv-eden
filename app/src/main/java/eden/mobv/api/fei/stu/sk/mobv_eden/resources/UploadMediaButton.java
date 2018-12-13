@@ -24,23 +24,7 @@ public class UploadMediaButton {
         MEDIA_PICKER_SELECT = _MEDIA_PICKER_SELECT;
 
         // create button
-        ContextThemeWrapper ctw = new ContextThemeWrapper(activity, R.style.AppTheme);
-        floatingActionButton = new FloatingActionButton(ctw);
-    }
-
-    // set xml layout style for button in current activity
-    //@SuppressLint("ResourceType")
-    private void setDefaultStyle() {
-        floatingActionButton.setImageResource(R.drawable.ic_plus_button);
-        floatingActionButton.setId(View.generateViewId());
-        constraintLayout.addView(floatingActionButton); // add button to layout
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(constraintLayout);
-        constraintSet.connect(floatingActionButton.getId(), ConstraintSet.BOTTOM, constraintLayout.getId(), ConstraintSet.BOTTOM,36);
-        constraintSet.connect(floatingActionButton.getId(), ConstraintSet.END, constraintLayout.getId(), ConstraintSet.END,40);
-        constraintSet.constrainHeight(floatingActionButton.getId(), ConstraintSet.WRAP_CONTENT);
-        constraintSet.constrainWidth(floatingActionButton.getId(), ConstraintSet.WRAP_CONTENT);
-        constraintSet.applyTo(constraintLayout);
+        floatingActionButton = activity.findViewById(R.id.fab_add);
     }
 
     // set on click listener to pick video/image from gallery
@@ -59,7 +43,6 @@ public class UploadMediaButton {
     }
 
     public void setEverything() {
-        setDefaultStyle();
         setMediaPickListener();
     }
 }
